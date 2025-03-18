@@ -1,8 +1,9 @@
 import * as React from "react";
+import {Digit, Operator} from "../../App.tsx";
 
 type CalculatorButtonProps = {
-    action: (value: string | number) => void,
-    value: string | number,
+    action: (value: Digit | Operator | "=" | "C") => void,
+    value: Digit | Operator | "=" | "C",
     specialStyles?: React.CSSProperties;
 }
 export const CalculatorButton = ( {action, value, specialStyles}: CalculatorButtonProps ) => {

@@ -1,8 +1,15 @@
 import styles from "./Calculator.module.scss";
 import {CalculatorButton} from "../../ui/buttons/Buttons.tsx";
-import {digits, operators} from "../../App.tsx";
+import {Digit, digits, Operator, operators} from "../../App.tsx";
 
-const Calculator = ({handleAddDigit, handleAddOperator, handleClear, handleResult}) => {
+type CalculatorProps = {
+    handleAddDigit: (value: Digit) => void,
+    handleAddOperator: (value: Operator) => void,
+    handleClear: () => void,
+    handleResult: () => void,
+}
+
+const Calculator = ({handleAddDigit, handleAddOperator, handleClear, handleResult}: CalculatorProps) => {
     return (
         <div className={styles.main}>
             <div className={styles.empty_space}></div>

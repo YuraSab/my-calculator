@@ -5,28 +5,29 @@ import {useEffect, useState} from "react";
 
 export type Operator = "*"  | "/";
 export type Digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+export type Calculations = (Operator | Digit)[];
 
 export const operators: Operator[] = ["*", "/"];
 export const digits: Digit[] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 function App() {
 
-    const [calculations, setCalculation] = useState<(Operator | Digit)[]>([]);
+    const [calculations, setCalculation] = useState<Calculations>([]);
     const [result, setResult] = useState<string>("");
 
-    const handleAddDigit = (value) => {
+    const handleAddDigit = (value: Digit) => {
         if (result) setResult("");
         setCalculation((prev) => {
-            if ( prev.length === 0 || operators.includes(prev[prev.length-1]) )
+            if ( prev.length === 0 || operators.includes(prev[prev.length-1 as Operator]) )
                 return [...prev, value];
             return [...prev.slice(0, -1), prev[prev.length-1] + value];
         });
     }
 
-    const handleAddOperator = (value) => {
+    const handleAddOperator = (value: Operator) => {
         if ( !calculations.length ) return;
         setCalculation((prev) => {
-            if ( operators.includes(prev[prev.length-1]) )
+            if ( operators.includes(prev[prev.length-1  as Operator]) )
                 return [...prev.slice(0, -1), value];
             return [...prev, value];
         });
@@ -39,11 +40,11 @@ function App() {
 
     const handleResult = () => {
         if ( !calculations.length ) return;
-        if (operators.includes(calculations[calculations.length - 1]))
+        if (operators.includes(calculations[calculations.length - 1  as Operator]))
             setCalculation((prev) => prev.slice(0, -1));
 
         const resultOfExp = getResults();
-        updateHistory(calculations, resultOfExp);
+        updateHistory(calculations, resultOfExp.toString());
         setCalculation([]);
         setResult(resultOfExp.toString());
     }
@@ -59,6 +60,10 @@ function App() {
                     counter = Number(counter) * Number(secondOperand);
                     break;
                 case "/":
+                    if (Number(secondOperand) === 0) {
+                        setResult("Error: Division by zero");
+                        return;
+                    }
                     counter = Number(counter) / Number(secondOperand);
                     break;
                 default:
@@ -68,7 +73,7 @@ function App() {
         return counter;
     }
 
-    const updateHistory = (calculations, result) => {
+    const updateHistory = (calculations: Calculations, result: string) => {
         const calculationHistory = localStorage.getItem("calculationHistory");
         const history = JSON.parse(calculationHistory) || [];
         history.push({calculations, result});
